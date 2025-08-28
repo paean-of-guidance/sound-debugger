@@ -1,0 +1,40 @@
+{
+  "Acc000_000.sbnk": {
+    "455431085": [
+      {
+        "is_random": false,
+        "condition": null,
+        "wems": [
+          {
+            "m_bank": "Acc000_000.sbnk",
+            "index": 1
+          }
+        ]
+      }
+    ],
+    "1735074850": [
+      {
+        "is_random": false,
+        "condition": null,
+        "wems": [
+          {
+            "m_bank": "Acc000_000.sbnk",
+            "index": 2
+          }
+        ]
+      }
+    ],
+    "2743317059": [
+      {
+        "is_random": false,
+        "condition": null,
+        "wems": [
+          {
+            "m_bank": "Acc000_000.sbnk",
+            "index": 7
+          }
+        ]
+      }
+    ]
+  }
+}
