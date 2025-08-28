@@ -13,7 +13,7 @@ import argparse
 from pathlib import Path
 
 
-def create_hardlinks(source_dir, target_dir):
+def create_hardlinks(source_dir, target_dir, override=False):
     """
     递归创建源目录到目标目录的硬链接，保持目录结构
     
@@ -46,9 +46,13 @@ def create_hardlinks(source_dir, target_dir):
             try:
                 # 如果目标文件已存在，跳过
                 if target_file.exists():
-                    print(f"跳过已存在的文件: {target_file}")
-                    skipped_count += 1
-                    continue
+                    if override:
+                        print(f"将覆盖已存在的文件: {target_file}")
+                        target_file.unlink()
+                    else:
+                        print(f"跳过已存在的文件: {target_file}")
+                        skipped_count += 1
+                        continue
                 
                 # 创建硬链接
                 os.link(source_file, target_file)
@@ -75,6 +79,11 @@ def main():
     parser.add_argument(
         "game_root", 
         help="游戏根目录路径"
+    )
+    parser.add_argument(
+        "-f", 
+        action="store_true", 
+        help="如果目标文件已存在，覆盖它"
     )
     parser.add_argument(
         "--dry-run", 
@@ -130,7 +139,7 @@ def main():
     # 执行硬链接创建
     print("开始创建硬链接...")
     try:
-        created, skipped, errors = create_hardlinks(reframework_source, reframework_target)
+        created, skipped, errors = create_hardlinks(reframework_source, reframework_target, args.f or False)
         
         print(f"\n操作完成!")
         print(f"创建硬链接: {created} 个文件")
