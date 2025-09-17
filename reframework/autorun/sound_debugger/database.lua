@@ -5,8 +5,8 @@
 
 -- 类型定义和注解
 ---@class WemInfo
----@field m_bank string @ WEM文件所属的声音库名称
 ---@field index number @ WEM文件在声音库中的索引
+---@field wem_id number
 
 ---@class EventDetail
 ---@field is_random boolean @ 是否为随机声音事件
@@ -14,16 +14,17 @@
 ---@field wems WemInfo[] @ WEM文件信息列表
 ---@field trigger_id number|nil @ 触发器ID（运行时添加）
 ---@field event_id number|nil @ 事件ID（运行时添加）
+---@field bank_name string|nil @ 声音库名称（运行时添加）
 
 ---@class EventInfo
 ---@field event_id number @ 事件ID
 ---@field bank string @ 声音库名称
 
 ---@class TriggerEventIndexMap
----@field [string] table<string, number> @ 声音库名称 -> (触发器ID字符串 -> 事件ID数字)
+---@field @ 声音库名称 -> (触发器ID字符串 -> 事件ID数字)
 
 ---@class EventSoundIndexMap  
----@field [string] table<string, EventDetail[]> @ 声音库名称 -> (事件ID字符串 -> 事件详情列表)
+---@field @ 声音库名称 -> (事件ID字符串 -> 事件详情列表)
 
 -- 数据加载
 local trigger_event_indexmap = json.load_file("sound_debugger/trigger_event_indexmap.json") --[[@as TriggerEventIndexMap]]
@@ -48,15 +49,20 @@ for bank, triggers in pairs(trigger_event_indexmap) do
     end
 end
 
--- 事件ID到声音库的映射（一对一关系）
-local event_to_bank = {} --[[@as table<string, string>]]
+-- 事件ID到声音库的映射（支持一对多关系）
+local event_to_bank = {} --[[@as table<string, string|string[]>]]
 
 for bank, event_sounds in pairs(event_sound_indexmap) do
     for event_id, _ in pairs(event_sounds) do
         if not event_to_bank[event_id] then
             event_to_bank[event_id] = bank
         else
-            error("冲突的事件ID: " .. tostring(event_id) .. " 在声音库 " .. bank .. " 中")
+            local existing = event_to_bank[event_id]
+            if type(existing) == "table" then
+                table.insert(existing, bank)
+            else
+                event_to_bank[event_id] = {existing, bank}
+            end
         end
     end
 end
@@ -101,12 +107,20 @@ function M.get_event_details_by_event_id(bank, event_id)
     end
 
     local event_infos = bank_event_sound_data[tostring(event_id)]
+
+    -- 为事件详情添加声音库信息
+    if event_infos then
+        for _, event_detail in ipairs(event_infos) do
+            event_detail["bank_name"] = bank
+        end
+    end
+
     return event_infos
 end
 
 ---根据事件ID获取对应的声音库名称
 ---@param event_id number @ 事件ID
----@return string|nil @ 声音库名称，如果未找到返回nil
+---@return string|string[]|nil @ 声音库名称或名称列表，如果未找到返回nil
 function M.get_bank_by_event_id(event_id)
     return event_to_bank[tostring(event_id)]
 end
@@ -167,7 +181,11 @@ end
 ---@param filter_profile table @ 过滤器配置
 ---@return boolean @ 是否通过过滤
 local function filter_event_detail_once(event_detail, filter_profile)
-    local typical_bank_name = event_detail[1]["wems"][1]["m_bank"]
+    local typical_bank_name = event_detail[1]["bank_name"]
+    if not typical_bank_name then
+        return true -- 如果没有声音库信息，默认通过
+    end
+
     local is_match = false
 
     for _, filter_string in ipairs(filter_profile.banks) do

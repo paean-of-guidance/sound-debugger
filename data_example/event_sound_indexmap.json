@@ -6,8 +6,8 @@
         "condition": null,
         "wems": [
           {
-            "m_bank": "Acc000_000.sbnk",
-            "index": 1
+            "index": 1,
+            "wem_id": 79107357
           }
         ]
       }
@@ -18,8 +18,8 @@
         "condition": null,
         "wems": [
           {
-            "m_bank": "Acc000_000.sbnk",
-            "index": 2
+            "index": 2,
+            "wem_id": 130657094
           }
         ]
       }
@@ -30,8 +30,8 @@
         "condition": null,
         "wems": [
           {
-            "m_bank": "Acc000_000.sbnk",
-            "index": 7
+            "index": 7,
+            "wem_id": 809089739
           }
         ]
       }
