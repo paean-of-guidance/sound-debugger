@@ -17,6 +17,7 @@ A REFramework mod for real-time sound event monitoring and debugging in Monster 
 
 - **Database Dependency**: This mod relies on sound databases extracted from game resources ([data/sound_debugger](data/sound_debugger))
 - **Version Compatibility**: Database must be updated with game patches - using outdated versions may result in inaccurate sound mapping
+- **Language**: For audio banks that support multiple languages, JP (Japanese) is the baseline.
 
 ## Features
 
@@ -28,7 +29,47 @@ A REFramework mod for real-time sound event monitoring and debugging in Monster 
 > [!WARNING]  
 > Playback some effect audio may crash your game.
 
+## Screenshots
+
+**Preview**
+
+![preview.png](screenshots/preview.png)
+
+### Log Result Types
+
+**Random sequence**
+
+The event will randomly play one of the sequence.
+
+In the image, [84] and [126] will randomly play one of them. It could be sequential playback or completely random playback, depending on the configured strategy.
+
+![random.png](screenshots/random.png)
+
 ---
+
+**Conditional playback**
+
+This trigger will play one event that meets the conditions.
+
+Conditional playback typically occurs for sounds of different weapon materials or sounds under different environmental conditions.
+
+> [!NOTE]
+> We currently cannot retrieve the conditions being used, so we show you all possibilities.
+
+![condition.png](screenshots/condition.png)
+
+---
+
+**Multiple results**
+
+This trigger may correspond to multiple events registered in different Banks, but only one will play at a time.
+
+This situation typically occurs with NPC and character voices, or character voices with different tones.
+
+> [!NOTE]
+> We currently cannot retrieve the Bank being played, so we show you all possibilities.
+
+![multi.png](screenshots/multi.png)
 
 # 怪物猎人荒野声音调试器
 
@@ -49,6 +90,7 @@ A REFramework mod for real-time sound event monitoring and debugging in Monster 
 
 - **数据库依赖**: 本模组依赖从游戏资源提取的声音数据库 ([data/sound_debugger](data/sound_debugger))
 - **版本兼容性**: 数据库需要随游戏更新而更新 - 使用旧版本可能导致声音映射不准确
+- **语言**: 对于多语言支持的音频库，以JP（日语）为基准
 
 ## 功能特性
 
@@ -56,3 +98,7 @@ A REFramework mod for real-time sound event monitoring and debugging in Monster 
 - 交互式声音播放/停止
 - 声音库过滤（白名单/黑名单）
 - 触发器ID ↔ 事件ID ↔ WEM文件交叉引用
+
+## 截图
+
+见英文部分
