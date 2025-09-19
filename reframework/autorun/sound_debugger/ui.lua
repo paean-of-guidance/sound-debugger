@@ -115,8 +115,9 @@ function M.draw_event_detail_node(event_details, unique_id, call_context, manual
                 imgui.text("Random Play")
             end
             
+            -- 显示音频列表，包含顺序id和唯一id
             for _, wem_info in ipairs(event_detail["wems"]) do
-                imgui.text("  - " .. string.format("%s[%d]", wem_info["m_bank"], wem_info["index"]))
+                imgui.text(string.format("  - %d  %s[%d]", wem_info["wem_id"], wem_info["m_bank"], wem_info["index"]))
             end
         end
         

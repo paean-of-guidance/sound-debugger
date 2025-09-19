@@ -6,8 +6,9 @@
         "condition": null,
         "wems": [
           {
-            "m_bank": "Acc000_000.sbnk",
-            "index": 1
+            "index": 1,
+            "wem_id": 79107357,
+            "m_bank": "Acc000_000.sbnk"
           }
         ]
       }
@@ -18,20 +19,9 @@
         "condition": null,
         "wems": [
           {
-            "m_bank": "Acc000_000.sbnk",
-            "index": 2
-          }
-        ]
-      }
-    ],
-    "2743317059": [
-      {
-        "is_random": false,
-        "condition": null,
-        "wems": [
-          {
-            "m_bank": "Acc000_000.sbnk",
-            "index": 7
+            "index": 2,
+            "wem_id": 130657094,
+            "m_bank": "Acc000_000.sbnk"
           }
         ]
       }

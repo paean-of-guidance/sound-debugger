@@ -20,10 +20,10 @@
 ---@field bank string @ 声音库名称
 
 ---@class TriggerEventIndexMap
----@field [string] table<string, number> @ 声音库名称 -> (触发器ID字符串 -> 事件ID数字)
+---@field @ 声音库名称 -> (触发器ID字符串 -> 事件ID数字)
 
 ---@class EventSoundIndexMap  
----@field [string] table<string, EventDetail[]> @ 声音库名称 -> (事件ID字符串 -> 事件详情列表)
+---@field @ 声音库名称 -> (事件ID字符串 -> 事件详情列表)
 
 -- 数据加载
 local trigger_event_indexmap = json.load_file("sound_debugger/trigger_event_indexmap.json") --[[@as TriggerEventIndexMap]]
@@ -48,15 +48,20 @@ for bank, triggers in pairs(trigger_event_indexmap) do
     end
 end
 
--- 事件ID到声音库的映射（一对一关系）
-local event_to_bank = {} --[[@as table<string, string>]]
+-- 事件ID到声音库的映射（支持一对多关系）
+local event_to_bank = {} --[[@as table<string, string|string[]>]]
 
 for bank, event_sounds in pairs(event_sound_indexmap) do
     for event_id, _ in pairs(event_sounds) do
         if not event_to_bank[event_id] then
             event_to_bank[event_id] = bank
         else
-            error("冲突的事件ID: " .. tostring(event_id) .. " 在声音库 " .. bank .. " 中")
+            local existing = event_to_bank[event_id]
+            if type(existing) == "table" then
+                table.insert(existing, bank)
+            else
+                event_to_bank[event_id] = {existing, bank}
+            end
         end
     end
 end
@@ -106,7 +111,7 @@ end
 
 ---根据事件ID获取对应的声音库名称
 ---@param event_id number @ 事件ID
----@return string|nil @ 声音库名称，如果未找到返回nil
+---@return string|string[]|nil @ 声音库名称或名称列表，如果未找到返回nil
 function M.get_bank_by_event_id(event_id)
     return event_to_bank[tostring(event_id)]
 end

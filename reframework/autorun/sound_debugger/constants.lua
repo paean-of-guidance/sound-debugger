@@ -5,7 +5,7 @@
 local M = {}
 
 -- 版本信息
-M.VERSION = "1.0.0-beta10 (2025-04-06)"
+M.VERSION = "1.0.0-beta12 (2025-09-19)"
 
 -- 调用函数类型枚举
 M.CALL_FUNCTION_TYPE = {
