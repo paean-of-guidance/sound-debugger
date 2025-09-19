@@ -137,27 +137,24 @@ local function on_request_info_trigger(args)
     g_recent_trigger_info.trigger_id = trigger_id
 
     -- 查询事件详情
-    local banks = database.get_bank_by_event_id(event_id)
-    if not banks then
+    local bank = database.get_bank_by_event_id(event_id)
+    if not bank then
         utils.log_error("unknown event_id: " .. tostring(event_id), "RequestInfoTrigger")
         return
     end
 
-    -- 处理一对多的情况
-    local banks_list = type(banks) == "table" and banks or {banks}
+    local event_details = database.get_event_details_by_event_id(bank, event_id)
+    if not event_details then
+        return
+    end
 
     -- 过滤并处理事件详情
     local valid_event_details = {}
-    for _, bank_name in ipairs(banks_list) do
-        local event_details = database.get_event_details_by_event_id(bank_name, event_id)
-        if event_details then
-            for _, event_detail in ipairs(event_details) do
-                if #event_detail["wems"] > 0 then
-                    event_detail["trigger_id"] = trigger_id
-                    event_detail["event_id"] = event_id
-                    table.insert(valid_event_details, event_detail)
-                end
-            end
+    for _, event_detail in ipairs(event_details) do
+        if #event_detail["wems"] > 0 then
+            event_detail["trigger_id"] = trigger_id
+            event_detail["event_id"] = event_id
+            table.insert(valid_event_details, event_detail)
         end
     end
 
